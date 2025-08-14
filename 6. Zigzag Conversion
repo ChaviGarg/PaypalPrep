@@ -1,0 +1,29 @@
+Refer this NeetCode youtube video for explanation : https://www.youtube.com/watch?v=Q2Tw6gcVEwc
+
+
+class Solution {
+    public String convert(String s, int numRows) {
+        StringBuilder result = new StringBuilder();
+        if(numRows == 1 || numRows >= s.length())
+           return s;
+        for(int r=0; r < numRows; r++){
+            int increment = 2* (numRows-1);
+            for(int i=r; i < s.length(); i+=increment){
+                result.append(s.charAt(i));
+                if(r > 0 && r < numRows-1 && (i+increment-(2*r)) < s.length()){
+                    result.append(s.charAt(i+increment-(2*r)));
+                }
+            }
+
+        }
+        return result.toString();
+    }
+}
+
+
+Time Complexity: O(n)
+You append each character at most once (each index in s is visited in a regular pattern with step 2*(numRows-1) and possibly a middle “diagonal” append).
+Total work is linear in n = s.length(); the loops together touch each character a constant number of times. Amortized O(1) per StringBuilder.append.
+Space Complexity: O(n)
+The StringBuilder result stores the converted string of length n.
+Auxiliary space (excluding output): O(1) — only a few integers, no extra data structures.
