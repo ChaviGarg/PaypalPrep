@@ -1,0 +1,72 @@
+Problem desc : https://leetcode.com/problems/serialize-and-deserialize-binary-tree/description/?envType=company&envId=paypal&favoriteSlug=paypal-thirty-days
+
+Neetcode explanation I followed : https://www.youtube.com/watch?v=u4JAi2JJhI8
+
+Solution:
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+public class Codec {
+
+    int pos = 0;
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        if(root == null)
+           return "";
+        StringBuilder result = new StringBuilder();
+        serializeHelper(root, result);
+        result.deleteCharAt(result.length()-1);
+        return result.toString();
+    }
+
+    private void serializeHelper(TreeNode root, StringBuilder sb){
+        if(root == null){
+            sb.append("N").append(",");
+            return;
+        }
+        sb.append(root.val).append(",");
+        serializeHelper(root.left, sb);
+        serializeHelper(root.right, sb);
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        if(data.isEmpty())
+           return null;
+        String[] arr = data.split(",");
+        return constructTree(arr);
+    }
+
+    private TreeNode constructTree(String[] arr){
+        if(pos >= arr.length || arr[pos].equals("N")){
+            pos++;
+            return null;
+        }
+        TreeNode root = new TreeNode(Integer.parseInt(arr[pos++]));
+        root.left = constructTree(arr);
+        root.right = constructTree(arr);
+        return root;
+    }
+}
+
+// Your Codec object will be instantiated and called as such:
+// Codec ser = new Codec();
+// Codec deser = new Codec();
+// TreeNode ans = deser.deserialize(ser.serialize(root));
+
+
+
+Complexity :
+
+Serialize → O(n) time, O(n + h) space
+Deserialize → O(n) time, O(n + h) space
+where:
+n = number of nodes in tree
+h = height of tree
