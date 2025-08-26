@@ -1,0 +1,63 @@
+You can refer this leetcode editorial and youtube video : https://www.youtube.com/watch?v=O3jr8HOpkUU
+
+Solution :
+
+class Solution {
+    public String smallestStringWithSwaps(String s, List<List<Integer>> pairs) {
+        Map<Integer, List<Integer>> adjMap = new HashMap<>();
+
+        for(List<Integer> pair : pairs){
+            adjMap.put(pair.get(0), new ArrayList<>());
+            adjMap.put(pair.get(1), new ArrayList<>());
+        }
+        for(List<Integer> pair : pairs){
+            adjMap.get(pair.get(0)).add(pair.get(1));
+            adjMap.get(pair.get(1)).add(pair.get(0));
+        }
+
+        boolean visited[] = new boolean[s.length()];
+        char[] ans = s.toCharArray();
+
+        for(int i=0; i < s.length(); i++){
+            List<Integer> ids = new ArrayList<>();
+            List<Character> chars = new ArrayList<>();
+            if(visited[i])
+               continue;
+            dfs(i, adjMap, visited, ids);
+            for(int id : ids){
+                chars.add(ans[id]);
+            }
+            Collections.sort(ids);
+            Collections.sort(chars);
+            
+            for(int k=0; k < chars.size() ; k++){
+                ans[ids.get(k)] = chars.get(k);
+               
+            }
+        }
+        return String.valueOf(ans);
+
+    }
+    private void dfs(int x, Map<Integer, List<Integer>> adjMap, boolean[] visited, List<Integer> ids){
+        visited[x] = true;
+        ids.add(x);
+        List<Integer> neighbors = adjMap.get(x);
+        if(neighbors != null){
+            for(int n : neighbors){
+                if(! visited[n])
+                    dfs(n, adjMap, visited, ids);
+            }
+        }
+    }
+
+}
+
+n = s and m = pairs.length
+Time complexity : O(n) for creating adj list and O(m+n) for DFS and if connected componnet size is k
+then O(k log k) for sorting and O(k) for iterating and O(K) for assigning string
+If graph contains only one connected component then k will be equals to n and overall sorting will be O(n log n)
+Final : O(n log n+ m)
+
+Space : O(n)  [recursion stack + adj map + visited array + chars and ids]
+
+
